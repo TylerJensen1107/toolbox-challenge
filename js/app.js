@@ -1,4 +1,24 @@
-$(document).ready(function() {
+var newGameCheck = true;
+
+$(document).ready(function() {	
+	//Readies the newGame button to start a new game. 
+	$('#newGame').click(setup);
+	setup();
+
+});
+
+function setup() {
+	
+	//On the first game, this will set newGameCheck to false. All subsequent games, it 
+	//sets it to true. This is used to clear the timer on a new game.
+	newGameCheck = !newGameCheck;
+
+	//After 1.1 seconds, switch newGame to false. This ends the old timer but doesn't stop the new one.
+	//This is perhaps the hackiest thing I've ever done.
+	window.setTimeout(function() {
+		newGameCheck = false;
+	}, 1100);
+
 	var tiles = [];
 	for (var idx = 1; idx <= 32; idx++) {
 		tiles.push({
@@ -20,6 +40,7 @@ $(document).ready(function() {
 	tilePairs = _.shuffle(tilePairs);
 
 	var gameBoard = $('#game-board');
+	gameBoard.empty();
 	var row = $(document.createElement('div'));
 	var img;
 	_.forEach(tilePairs, function(tile, elemIndex) {
@@ -38,9 +59,13 @@ $(document).ready(function() {
 
 	gameBoard.append(row);
 
+	play();
+}
+
+function play() {
 	var images = $('#game-board img');
 
-	var matches = 0;
+	var matches = 7;
 	var matchesLeft = 8;
 	var missed = 0;
 
@@ -55,20 +80,11 @@ $(document).ready(function() {
 			img.fadeOut(100, function() {
 				tileTwo = tileOne;
 				tileOne = tile;
-				missed++;
-				// if(tile.flipped) {
-				// 	img.attr('src', 'img/tile-back.png');
-				// } else {
 					img.attr({
 						src: tile.src
 					});
-				//}
-				//tile.flipped = !tile.flipped;
 				tile.canFlip = false;
 				img.fadeIn(100);
-
-				console.log(tileOne);
-				console.log(tileTwo);
 
 				//If we have chosen two tiles
 				if(tileOne != null && tileTwo != null) {
@@ -78,6 +94,7 @@ $(document).ready(function() {
 					} else {
 						//Because the code after set timeout runs before set timeout, all the variables are reset. To
 						//Solve this I created copies
+						missed++;
 						var tileOneCopy = tileOne;
 						var tileTwoCopy = tileTwo;
 						var imgCopy = img;
@@ -101,10 +118,17 @@ $(document).ready(function() {
 	var startTime = _.now();
 	var timer = window.setInterval(function() {
 		var elapsedSeconds = Math.floor((_.now() - startTime) / 1000);
-		$('#elapsed-seconds').text(elapsedSeconds);
-		if(matches == 8) {
+		$('#elapsed-seconds').text("Elapsed time : " + elapsedSeconds);
+		$('#matches-made').text("Matches Made : " + matches);
+		$('#wrong-guesses').text("Wrong Guesses : " + missed);
+		$('#matches-left').text("Matches Left : " + matchesLeft);
+		if(newGameCheck) {
 			window.clearInterval(timer);
-		}
+			newGameCheck = false;
+		} else if (matches == 8) {
+			newGameCheck = true;
+			window.clearInterval(timer);
+			alert('You win!!');
+		};
 	}, 1000);
-
-});
+}

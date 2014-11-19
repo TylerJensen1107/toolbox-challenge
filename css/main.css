@@ -3,3 +3,26 @@
 	height: 150px;
 	padding-right: 5px;
 }
+
+#game-board {
+	margin-left: 25%;
+	margin-right: 25%;
+	padding-left: 30px;
+}
+
+h1 {
+	text-align: center;
+}
+
+li {
+	display: inline-block;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+ul {
+	text-align: center;
+}
+
+body {
+	background-color: #FF894A;
+}
