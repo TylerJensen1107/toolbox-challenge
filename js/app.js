@@ -62,10 +62,12 @@ function setup() {
 	play();
 }
 
+
+//This function plays the game by setting up the tiles to click
 function play() {
 	var images = $('#game-board img');
 
-	var matches = 7;
+	var matches = 0;
 	var matchesLeft = 8;
 	var missed = 0;
 
